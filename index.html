@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI Pro Newsletter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --page-bg: #0B0B0B;
+            --card-surface: #141414;
+            --stroke: rgba(255,255,255,0.09);
+            --accent-start: #13a380;
+            --accent-end: #13a380;
+            --body-text: #C8C8C8;
+            --footer-text: #A0A0A0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--page-bg);
+            color: var(--body-text);
+            line-height: 1.75;
+        }
+        
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background-color: var(--card-surface);
+            padding: 48px 56px;
+            border-radius: 16px;
+            box-shadow: 0 0 22px rgba(0, 0, 0, 0.5);
+            margin-bottom: 32px;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-button {
+            background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+            color: black;
+            font-weight: 500;
+            font-size: 18px;
+            padding: 12px 24px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .gradient-button:hover {
+            transform: scale(1.02);
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 380px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            border-radius: 14px;
+            margin: 24px 0;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .hero-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .stat-pill {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--stroke);
+            padding: 12px 20px;
+            border-radius: 24px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .callout-box {
+            background-color: var(--card-surface);
+            border-left: 4px solid var(--accent-start);
+            padding: 24px;
+            margin: 24px 0;
+            border-radius: 8px;
+            font-style: italic;
+        }
+        
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-pill {
+            padding: 12px 20px;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .tab-pill.active {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: white;
+        }
+        
+        .tab-pill.inactive {
+            background-color: transparent;
+            color: #888;
+        }
+        
+        .tab-pill.inactive:hover {
+            color: #ccc;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .accent-card {
+            background-color: var(--card-surface);
+            border-left: 4px solid;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .prompt-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--stroke);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Inter', monospace;
+            font-size: 14px;
+        }
+        
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .interactive-prompt {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--stroke);
+            padding: 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--body-text);
+            user-select: text;
+            cursor: text;
+        }
+        
+        .format, .topic, .tone, .research, .style, .connectors {
+            padding: 3px 6px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .format:hover, .topic:hover, .tone:hover, .research:hover, .style:hover, .connectors:hover {
+            transform: scale(1.02);
+        }
+        
+        .category-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .legend-item:hover {
+            cursor: pointer;
+        }
+        
+        .legend-item:hover .format-highlight {
+            background-color: rgba(147, 51, 234, 0.4) !important;
+        }
+        
+        .legend-item:hover .topic-highlight {
+            background-color: rgba(138, 180, 255, 0.4) !important;
+        }
+        
+        .legend-item:hover .tone-highlight {
+            background-color: rgba(16, 185, 129, 0.4) !important;
+        }
+        
+        .legend-item:hover .research-highlight {
+            background-color: rgba(245, 158, 11, 0.4) !important;
+        }
+        
+        .legend-item:hover .style-highlight {
+            background-color: rgba(239, 68, 68, 0.4) !important;
+        }
+        
+        .legend-item:hover .connectors-highlight {
+            background-color: rgba(19, 163, 128, 0.4) !important;
+        }
+        
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 32px 24px;
+                margin: 0 16px 32px;
+            }
+            
+            .tab-nav {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Card -->
+        <div class="card">
+            <div class="gradient-text" style="font-size: 20px; font-weight: 700; margin-bottom: 32px;">
+                OpenAI Pro
+            </div>
+            
+            <h1 style="font-size: 38px; font-weight: 700; margin-bottom: 24px; background: linear-gradient(135deg, #f0f0f0, #c0c0c0); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                How MIT Uses Deep Research
+            </h1>
+            
+
+            
+            <h2 style="font-size: 28px; font-weight: 600; margin: 24px 0; color: white;">
+                Building academic case studies in minutes
+            </h2>
+            
+            <!-- Overview Section -->
+            <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); border-radius: 12px; padding: 24px; margin: 32px 0;">
+                <div style="display: grid; gap: 16px;">
+                    <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; padding: 12px 0;">
+                        <div style="font-weight: 600; color: white;">Who</div>
+                        <div style="color: var(--body-text);">Professor So, Sloan Distinguished Professor of Global Economics and Management at MIT Sloan School of Management</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-weight: 600; color: white;">What</div>
+                        <div style="color: var(--body-text);">Used Deep Research to generate a 16-page academic case study</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-weight: 600; color: white;">Why</div>
+                        <div style="color: var(--body-text);">To use Deep Research as a research companion, allowing focus on deeper pedagogical aspects and learning design</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 100px 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-weight: 600; color: white;">Tool Used</div>
+                        <div style="color: var(--body-text);">Deep Research (ChatGPT Pro feature)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 16px; margin: 32px 0;">
+                <div class="stat-pill">
+                    <div style="font-size: 24px; font-weight: 700; color: white;">6</div>
+                    <div style="font-size: 14px; color: #888;">Minutes to Generate</div>
+                </div>
+                <div class="stat-pill">
+                    <div style="font-size: 24px; font-weight: 700; color: white;">16</div>
+                    <div style="font-size: 14px; color: #888;">Pages of Content</div>
+                </div>
+                <div class="stat-pill">
+                    <div style="font-size: 24px; font-weight: 700; color: white;">22</div>
+                    <div style="font-size: 14px; color: #888;">Academic Sources</div>
+                </div>
+                <div class="stat-pill">
+                    <div style="font-size: 24px; font-weight: 700; color: white;">8</div>
+                    <div style="font-size: 14px; color: #888;">Faculty Hours Saved</div>
+                </div>
+            </div>
+            
+            <h3 style="color: white; font-weight: 600; margin: 32px 0 16px 0; font-size: 20px;">The Process</h3>
+            
+            <p style="font-size: 16px; line-height: 28px; margin: 24px 0;">
+                At MIT Sloan, Professor So set out to create a detailed case study on corporate earnings management. While a project like this typically demands hours of research, sourcing, and synthesis, using Deep Research, Professor So was able to generate a structured, 16-page draft in minutes.
+            </p>
+            
+            <p style="font-size: 16px; line-height: 28px; margin: 24px 0;">
+                <a href="#tab-prompts" onclick="showTab('prompts')" style="color: var(--accent-start); text-decoration: underline; cursor: pointer;">With a single, detailed prompt</a>, Professor So asked for a case study that blended historical analysis, financial data, regulatory context, and narrative storytelling. Before producing the draft, Deep Research asked a series of clarifying questions that helped align the output with his goals. Six minutes later, it delivered a 16-page draft complete with citations from NYU, the SEC, Reuters, and more.
+            </p>
+            
+            <p style="font-size: 16px; line-height: 28px; margin: 24px 0;">
+                Professor So reviewed and refined the draft by checking sources, customizing examples, and adding discussion prompts and visual exhibits. Deep Research provided a working draft that Professor So could evaluate and shape, freeing him from the early legwork of sourcing material and structuring the narrative.
+            </p>
+            
+            <p style="font-size: 16px; line-height: 28px; margin: 24px 0;">
+                This approach allowed him to focus on pedagogical value rather than starting from scratch. By using Deep Research to surface relevant themes and source material, Professor So could concentrate on tailoring the case to his students—shaping the structure, tone, and learning goals with intention. His process illustrates how expert users can partner with tools like Deep Research to speed up complex workflows without sacrificing quality or depth.
+            </p>
+            
+            <div style="text-align: center; margin: 32px 0; padding: 24px; background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); border-radius: 12px;">
+                <button class="gradient-button" style="margin-bottom: 16px;">
+                    Explore the MIT write‑up ↗
+                </button>
+                <p style="font-size: 14px; color: #888; margin: 0; line-height: 1.5;">
+                    Read Professor So's full analysis and see the complete case study he generated
+                </p>
+            </div>
+        </div>
+        
+        <!-- Tabbed Section -->
+        <div class="card">
+            <div style="background-color: rgba(19, 163, 128, 0.1); border: 1px solid rgba(19, 163, 128, 0.3); padding: 24px; border-radius: 12px; margin-bottom: 32px;">
+                <h3 style="color: var(--accent-start); font-weight: 600; margin-bottom: 16px; font-size: 18px;">Workshop This Case Study</h3>
+                <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px; color: var(--body-text);">
+                    The sections below break down Eric's complete workflow—from his original prompt structure to his review process and refinement approach. Use these insights to understand how to craft your own Deep Research prompts and integrate this tool into your own complex research workflows.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 20px;">
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--body-text);">
+                        <div style="background: var(--accent-start); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px;">1</div>
+                        <span><strong>Process:</strong> Step-by-step workflow</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--body-text);">
+                        <div style="background: var(--accent-start); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px;">2</div>
+                        <span><strong>Prompt:</strong> Analyze his structure</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--body-text);">
+                        <div style="background: var(--accent-start); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px;">3</div>
+                        <span><strong>Remix:</strong> Build your own version</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--body-text);">
+                        <div style="background: var(--accent-start); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px;">4</div>
+                        <span><strong>Review:</strong> Quality checklist</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-nav" style="justify-content: center;">
+                <div class="tab-pill active" onclick="showTab('process')">Process</div>
+                <div class="tab-pill inactive" onclick="showTab('prompts')">Prompt</div>
+                <div class="tab-pill inactive" onclick="showTab('community')">Remix</div>
+                <div class="tab-pill inactive" onclick="showTab('review')">Review</div>
+            </div>
+            
+            <!-- Process Tab -->
+            <div id="tab-process" class="tab-content active">
+                <h3 style="color: white; font-weight: 600; margin-bottom: 24px; font-size: 20px;">How Professor So Worked with Deep Research</h3>
+                <p style="font-size: 16px; color: var(--body-text); margin-bottom: 32px; line-height: 1.6;">
+                    This breaks down Professor So's workflow at MIT so you can apply the same approach to your own research projects. Each step includes what happened in his case and what you should consider for yours.
+                </p>
+                <div style="display: grid; gap: 20px;">
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">1</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">DEFINING RESEARCH INTENT</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Professor So at MIT Sloan wanted to draft a comprehensive case study on "Expectations Management and the Earnings Game"—aiming to accelerate the research process without compromising academic depth.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>What's the specific research question or topic you want to explore? Be as precise as possible about your end goal.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">2</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">DRAFTING AN AMBITIOUS PROMPT</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Professor So's initial request called for a story-driven introduction, historical and contemporary examples, regulatory framing, financial context, and APA-style citations.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Don't hold back—ask for everything you want. Deep Research works best with comprehensive, detailed prompts that specify format, tone, sources, and structure.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">3</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">ENGAGING IN CLARIFYING DIALOGUE</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Before generating output, Deep Research asked Professor So follow-up questions about industry focus, company selection, timeframe, and formatting—acting as an intelligent research partner.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Expect questions! This dialogue phase is crucial—answer thoughtfully as it shapes the entire research direction and quality of output.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">4</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">GENERATING A FULL DRAFT</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Deep Research returned a 16-page case study in just six minutes, complete with regulatory references, historical cases, and citations from 22 credible sources.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Be patient during generation—the more comprehensive your request, the longer it takes. The wait is worth it for the depth and sourcing quality.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">5</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">REFINING AND CONTEXTUALIZING</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Professor So evaluated the AI-generated draft alongside manually developed case studies, noting where AI succeeded and where human input—like visual aids, discussion prompts, and pedagogical framing—was still essential.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Treat the output as a sophisticated first draft. Add your expertise, domain knowledge, and unique insights to make it truly valuable for your specific audience.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Prompts Tab -->
+            <div id="tab-prompts" class="tab-content">
+                <h3 style="color: white; font-weight: 600; margin-bottom: 16px; font-size: 20px;">Breaking Down Professor So's Original Prompt</h3>
+                <div style="background-color: rgba(138, 180, 255, 0.1); border: 1px solid rgba(138, 180, 255, 0.3); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                    <p style="font-size: 16px; color: var(--body-text); margin: 0; line-height: 1.5;">
+                        <strong>How to use this:</strong> Click the colored legend items below to highlight different parts of Professor So's prompt structure. This shows you exactly how he organized his request to get such comprehensive results.
+                    </p>
+                </div>
+                
+                <div class="interactive-prompt" id="promptText">
+                    "Write a <span class="format">case study</span> on <span class="topic">Expectations Management and the Earnings Game</span>. <span class="connectors">Begin with</span> a <span class="tone">compelling and vivid narrative that introduces the key conflict or dilemma, engaging the reader with a real-world scenario</span>. <span class="tone">The first few pages should tell a story that sets the stage for the analytical discussion</span>. <span class="connectors">After this introduction, provide</span> a <span class="tone">structured analysis</span> that includes <span class="research">historical background, key actors, incentives, relevant regulations</span>, and the consequences of the case. <span class="connectors">Incorporate</span> <span class="research">deep research, financial data, regulatory excerpts, and impact analysis</span>. <span class="connectors">The case study should follow</span> a <span class="tone">logical structure with an engaging introduction (story-driven), followed by an in-depth technical and analytical exploration of the topic</span>, <span class="connectors">using</span> <span class="style">academic sources and relevant examples</span>."
+                </div>
+                
+                <div class="category-legend">
+                    <div class="legend-item" onclick="toggleHighlight('format')">
+                        <div class="legend-color" style="background-color: #9333ea;"></div>
+                        <span style="color: #9333ea;"><strong>Format:</strong> Type of output</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleHighlight('topic')">
+                        <div class="legend-color" style="background-color: #8AB4FF;"></div>
+                        <span style="color: #8AB4FF;"><strong>Topic:</strong> What you're exploring</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleHighlight('tone')">
+                        <div class="legend-color" style="background-color: #10b981;"></div>
+                        <span style="color: #10b981;"><strong>Tone & Structure:</strong> How it's organized</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleHighlight('research')">
+                        <div class="legend-color" style="background-color: #f59e0b;"></div>
+                        <span style="color: #f59e0b;"><strong>Research Depth:</strong> Data & citations</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleHighlight('style')">
+                        <div class="legend-color" style="background-color: #ef4444;"></div>
+                        <span style="color: #ef4444;"><strong>Style:</strong> Academic voice</span>
+                    </div>
+                    <div class="legend-item" onclick="toggleHighlight('connectors')">
+                        <div class="legend-color" style="background-color: #13a380;"></div>
+                        <span style="color: #13a380;"><strong>Connectors:</strong> Flow & transitions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Human Review Tab -->
+            <div id="tab-review" class="tab-content">
+                <h3 style="color: white; font-weight: 600; margin-bottom: 16px; font-size: 20px;">Review: Evaluating Deep Research Output Quality</h3>
+                <p style="font-size: 16px; color: var(--body-text); margin-bottom: 32px; line-height: 1.6;">
+                    Professor So's evaluation process shows what to check when reviewing AI-generated research. Use this checklist to ensure your Deep Research outputs meet your quality standards.
+                </p>
+                <div style="display: grid; gap: 20px;">
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">1</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">FACT-CHECKING CITATIONS</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Although Deep Research included 22 sources, none were verified by the model. Professor So notes that checking each citation was a necessary step before using the draft in an academic setting.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Always verify direct quotes, regulatory references, and case law.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">2</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">SELECTING THE RIGHT EXAMPLES</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Deep Research chose examples to match the prompt—but not all were ideal for Professor So's teaching goals. He swapped some out to better suit the audience and narrative.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Tailor examples to your specific use case, audience, or lesson goal.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">3</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">ADDING VISUAL AIDS & EXHIBITS</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">The AI-generated case study included strong text-based structure—but no visuals. Professor So added graphs, data tables, and timelines that helped students better engage with the material.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Think: what would make this clearer or more memorable in your context?</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">4</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">CRAFTING DISCUSSION QUESTIONS</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">Deep Research didn't include questions for classroom dialogue. Professor So wrote his own prompts to spark reflection and debate.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Use your expertise to turn raw material into learning experiences.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: flex-start; gap: 16px;">
+                            <div style="background: #13a380; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px;">5</div>
+                            <div>
+                                <h4 style="color: white; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">REFINING FOR VOICE & CLARITY</h4>
+                                <p style="line-height: 1.6; margin-bottom: 12px; color: var(--body-text);">While the AI output was impressive, it wasn't always concise or pedagogically precise. Professor So edited for clarity, tone, and flow.</p>
+                                <div style="display: flex; align-items: flex-start; gap: 8px; color: var(--accent-start); font-style: italic;">
+                                    <span style="margin-top: 2px;">→</span>
+                                    <span>Consider whether the language aligns with your teaching or communication style.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Remix Tab -->
+            <div id="tab-community" class="tab-content">
+                <h3 style="color: white; font-weight: 600; margin-bottom: 16px; font-size: 20px;">Build Your Own Prompt</h3>
+                <div style="background-color: rgba(138, 180, 255, 0.1); border: 1px solid rgba(138, 180, 255, 0.3); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                    <p style="font-size: 16px; color: var(--body-text); margin: 0; line-height: 1.5;">
+                        <strong>How to use this:</strong> This generator uses Professor So's exact prompt structure and automatically adds the connecting words ("Begin with", "Incorporate", etc.) for you. Just fill in the content sections below. Select your field to see relevant examples, click multiple bubbles to combine options with "+", or write your own content directly in the text boxes.
+                    </p>
+                </div>
+                
+                <!-- Field Selection -->
+                <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+                    <h4 style="color: white; font-weight: 600; margin-bottom: 12px;">Select Your Field</h4>
+                    <p style="font-size: 14px; color: white; margin-bottom: 16px;">Choose your area of work to see relevant examples in each section below. You can also write your own content directly in the text boxes.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button onclick="selectField('business')" id="field-business" class="field-button active" style="background-color: rgba(19, 163, 128, 0.3); border: 1px solid rgba(19, 163, 128, 0.5); color: var(--accent-start); padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 500;">Business</button>
+                        <button onclick="selectField('art')" id="field-art" class="field-button" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--stroke); color: #888; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 500;">Art & Design</button>
+                        <button onclick="selectField('science')" id="field-science" class="field-button" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--stroke); color: #888; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 500;">Science & Research</button>
+                        <button onclick="selectField('education')" id="field-education" class="field-button" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--stroke); color: #888; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 500;">Education</button>
+                        <button onclick="selectField('policy')" id="field-policy" class="field-button" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--stroke); color: #888; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 500;">Policy & Government</button>
+                        <button onclick="selectField('healthcare')" id="field-healthcare" class="field-button" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--stroke); color: #888; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 500;">Healthcare</button>
+                        <button onclick="selectField('technology')" id="field-technology" class="field-button" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--stroke); color: #888; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 500;">Technology</button>
+                    </div>
+                </div>
+                
+                <div style="display: grid; gap: 16px;">
+                    <div style="background-color: rgba(138, 180, 255, 0.1); border: 1px solid rgba(138, 180, 255, 0.3); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: #8AB4FF; font-weight: 600; margin-bottom: 12px;">Topic</h4>
+                        <p style="margin-bottom: 8px; color: white; font-size: 15px;">What specific topic or subject do you want to research?</p>
+                        <p style="font-size: 14px; color: #888; font-style: italic; margin-bottom: 12px;">Example: "Expectations Management and the Earnings Game"</p>
+                        <textarea id="topicInput" placeholder="Type here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--stroke); background-color: rgba(255,255,255,0.05); color: white; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
+                        <div id="topicBubbles" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                            <!-- Dynamic content populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(147, 51, 234, 0.1); border: 1px solid rgba(147, 51, 234, 0.3); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: #9333ea; font-weight: 600; margin-bottom: 12px;">Format</h4>
+                        <p style="margin-bottom: 8px; color: white; font-size: 15px;">What type of document do you want? (case study, report, analysis, etc.)</p>
+                        <p style="font-size: 14px; color: #888; font-style: italic; margin-bottom: 12px;">Example: "case study"</p>
+                        <textarea id="formatInput" placeholder="Type here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--stroke); background-color: rgba(255,255,255,0.05); color: white; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
+                        <div id="formatBubbles" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                            <!-- Dynamic content populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: #10b981; font-weight: 600; margin-bottom: 12px;">Tone & Structure</h4>
+                        <p style="margin-bottom: 8px; color: white; font-size: 15px;">How should it be organized and what tone should it have?</p>
+                        <p style="font-size: 14px; color: #888; font-style: italic; margin-bottom: 12px;">Examples: "compelling and vivid narrative", "structured analysis", "story-driven introduction"</p>
+                        <textarea id="toneInput" placeholder="Type here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--stroke); background-color: rgba(255,255,255,0.05); color: white; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
+                        <div id="toneBubbles" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                            <!-- Dynamic content populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: #f59e0b; font-weight: 600; margin-bottom: 12px;">Research Depth</h4>
+                        <p style="margin-bottom: 8px; color: white; font-size: 15px;">What kind of research and data should be included?</p>
+                        <p style="font-size: 14px; color: #888; font-style: italic; margin-bottom: 12px;">Examples: "historical background, key actors, relevant regulations", "financial data, regulatory excerpts"</p>
+                        <textarea id="researchInput" placeholder="Type here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--stroke); background-color: rgba(255,255,255,0.05); color: white; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
+                        <div id="researchBubbles" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                            <!-- Dynamic content populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 20px; border-radius: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <div class="legend-color style"></div>
+                            <h4 style="color: #ef4444; font-weight: 600; margin: 0;">Style</h4>
+                        </div>
+                        <p style="margin-bottom: 8px; color: white; font-size: 15px;">What writing style and citation format should be used?</p>
+                        <p style="font-size: 14px; color: #888; font-style: italic; margin-bottom: 12px;">Examples: "academic sources and relevant examples", "logical structure with engaging introduction"</p>
+                        <textarea id="styleInput" placeholder="Type here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--stroke); background-color: rgba(255,255,255,0.05); color: white; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
+                        <div id="styleBubbles" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                            <!-- Dynamic content populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 32px 0; display: flex; gap: 16px; justify-content: center; align-items: center;">
+                    <button onclick="generatePrompt()" style="background: linear-gradient(135deg, var(--accent-start), var(--accent-end)); color: black; font-weight: 600; font-size: 16px; padding: 14px 28px; border-radius: 12px; border: none; cursor: pointer; transition: transform 0.2s ease;">
+                        Generate My Prompt
+                    </button>
+                    <button onclick="clearAllFields()" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid var(--stroke); color: white; font-weight: 500; font-size: 14px; padding: 12px 20px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+                        Clear All
+                    </button>
+                </div>
+                
+                <div id="generatedPrompt" style="display: none; background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--stroke); padding: 24px; border-radius: 12px; margin-top: 24px;">
+                    <h4 style="color: white; font-weight: 600; margin-bottom: 16px;">Your Generated Prompt:</h4>
+                    <div id="promptOutput" style="font-size: 15px; line-height: 1.6; color: var(--body-text); padding: 16px; background-color: rgba(255,255,255,0.05); border-radius: 8px; border-left: 4px solid var(--accent-start);"></div>
+                    <div style="display: flex; gap: 12px; align-items: center; margin-top: 16px;">
+                        <p style="font-size: 14px; color: #888; margin: 0;">Copy this prompt and use it with Deep Research!</p>
+                        <button onclick="copyPrompt()" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid var(--stroke); color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: background-color 0.2s ease;">
+                            Copy Prompt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="text-align: center; padding: 48px 0; font-size: 13px; color: var(--footer-text);">
+            © 2025 OpenAI — All rights reserved
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all pills
+            const tabPills = document.querySelectorAll('.tab-pill');
+            tabPills.forEach(pill => {
+                pill.classList.remove('active');
+                pill.classList.add('inactive');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            // Add active class to clicked pill
+            event.target.classList.add('active');
+            event.target.classList.remove('inactive');
+        }
+        
+        // Add smooth scrolling behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.querySelector('.gradient-button');
+            button.addEventListener('click', function() {
+                this.textContent = 'Opening...';
+                setTimeout(() => {
+                    this.textContent = 'Explore the MIT write‑up ↗';
+                }, 1500);
+            });
+        });
+        
+        // Field data for different domains
+        const fieldData = {
+            business: {
+                topics: [
+                    'Climate Change Policy and Corporate Responsibility',
+                    'Digital Transformation in Healthcare',
+                    'Supply Chain Resilience and Risk Management',
+                    'Artificial Intelligence Ethics in Business',
+                    'Remote Work and Organizational Culture',
+                    'Cryptocurrency and Financial Regulation'
+                ],
+                formats: [
+                    'case study', 'research report', 'white paper', 'executive summary',
+                    'policy analysis', 'market analysis', 'strategic brief', 'literature review'
+                ],
+                tones: [
+                    'compelling and vivid narrative that introduces the key conflict',
+                    'clear executive summary followed by detailed analysis',
+                    'structured analysis with clear headings and sections',
+                    'problem-solution framework with real-world examples',
+                    'chronological timeline showing key developments',
+                    'comparative analysis examining multiple perspectives'
+                ],
+                research: [
+                    'deep research, financial data, regulatory excerpts, and impact analysis',
+                    'current market statistics, industry reports, and expert interviews',
+                    'peer-reviewed academic sources and recent case studies',
+                    'historical background, key actors, and relevant precedents',
+                    'quantitative data, surveys, and performance metrics',
+                    'policy documents, government reports, and legal frameworks'
+                ],
+                styles: [
+                    'academic sources and relevant examples',
+                    'APA format with proper citations and references',
+                    'professional tone suitable for business executives',
+                    'neutral, objective analysis with balanced perspectives',
+                    'accessible language that explains complex concepts clearly',
+                    'formal academic writing with scholarly references'
+                ]
+            },
+            art: {
+                topics: [
+                    'Digital Art and NFT Market Evolution',
+                    'Public Art and Community Engagement',
+                    'Art Therapy and Mental Health Applications',
+                    'Cultural Appropriation in Contemporary Art',
+                    'Sustainable Practices in Art Production',
+                    'Virtual Reality and Immersive Art Experiences'
+                ],
+                formats: [
+                    'artist statement', 'exhibition catalog', 'critical essay', 'curatorial proposal',
+                    'art historical analysis', 'creative brief', 'portfolio review', 'grant proposal'
+                ],
+                tones: [
+                    'evocative narrative that captures the artistic vision',
+                    'critical analysis with theoretical framework',
+                    'personal reflection combined with scholarly research',
+                    'comparative study of artistic movements',
+                    'chronological exploration of artistic development',
+                    'interdisciplinary approach connecting art to society'
+                ],
+                research: [
+                    'art historical sources, exhibition catalogs, and artist interviews',
+                    'contemporary criticism, gallery reviews, and market analysis',
+                    'theoretical frameworks from aesthetics and cultural studies',
+                    'archival materials, primary sources, and documentation',
+                    'cross-cultural comparisons and global art movements',
+                    'technical analysis of materials, methods, and conservation'
+                ],
+                styles: [
+                    'scholarly art historical writing with proper citations',
+                    'accessible language for general art audiences',
+                    'critical theory integrated with visual analysis',
+                    'personal voice balanced with academic rigor',
+                    'interdisciplinary approach drawing from multiple fields',
+                    'Chicago Manual of Style for art historical references'
+                ]
+            },
+            science: {
+                topics: [
+                    'CRISPR Gene Editing Ethics and Applications',
+                    'Climate Change Mitigation Technologies',
+                    'Quantum Computing and Cryptography',
+                    'Microplastics in Marine Ecosystems',
+                    'Artificial Intelligence in Drug Discovery',
+                    'Renewable Energy Storage Solutions'
+                ],
+                formats: [
+                    'research paper', 'systematic review', 'meta-analysis', 'technical report',
+                    'grant proposal', 'conference abstract', 'policy brief', 'literature review'
+                ],
+                tones: [
+                    'objective scientific analysis with clear methodology',
+                    'comprehensive review of current research',
+                    'hypothesis-driven investigation with evidence',
+                    'comparative analysis of competing theories',
+                    'systematic evaluation of experimental data',
+                    'interdisciplinary synthesis of multiple fields'
+                ],
+                research: [
+                    'peer-reviewed journals, experimental data, and statistical analysis',
+                    'laboratory studies, field research, and observational data',
+                    'systematic reviews, meta-analyses, and clinical trials',
+                    'government databases, scientific repositories, and datasets',
+                    'conference proceedings, preprints, and emerging research',
+                    'interdisciplinary sources from related scientific fields'
+                ],
+                styles: [
+                    'formal scientific writing with APA or Nature style',
+                    'precise technical language with defined terminology',
+                    'evidence-based conclusions with statistical support',
+                    'objective tone avoiding speculation and bias',
+                    'structured format following scientific conventions',
+                    'accessible explanations for interdisciplinary audiences'
+                ]
+            },
+            education: {
+                topics: [
+                    'Personalized Learning and AI in Education',
+                    'Social-Emotional Learning in K-12 Schools',
+                    'Digital Equity and the Homework Gap',
+                    'Teacher Retention and Professional Development',
+                    'Assessment Reform and Standardized Testing',
+                    'Multilingual Education and Language Policy'
+                ],
+                formats: [
+                    'curriculum guide', 'lesson plan', 'educational research', 'policy analysis',
+                    'program evaluation', 'teaching philosophy', 'action research', 'case study'
+                ],
+                tones: [
+                    'practical guidance with theoretical foundation',
+                    'evidence-based recommendations for practitioners',
+                    'reflective analysis of teaching practices',
+                    'student-centered approach with learning outcomes',
+                    'systematic evaluation of educational interventions',
+                    'inclusive framework addressing diverse learners'
+                ],
+                research: [
+                    'educational research journals, classroom studies, and learning analytics',
+                    'student assessment data, surveys, and focus groups',
+                    'policy documents, curriculum standards, and guidelines',
+                    'international comparisons and best practices',
+                    'longitudinal studies and developmental research',
+                    'interdisciplinary sources from psychology and sociology'
+                ],
+                styles: [
+                    'accessible language for educators and administrators',
+                    'APA format with educational research citations',
+                    'practical applications with theoretical grounding',
+                    'inclusive language reflecting diverse populations',
+                    'evidence-based recommendations with clear rationale',
+                    'collaborative tone encouraging professional dialogue'
+                ]
+            },
+            policy: {
+                topics: [
+                    'Universal Basic Income Implementation',
+                    'Data Privacy and Government Surveillance',
+                    'Immigration Policy and Economic Impact',
+                    'Healthcare Access and Rural Communities',
+                    'Criminal Justice Reform and Recidivism',
+                    'Climate Policy and International Cooperation'
+                ],
+                formats: [
+                    'policy brief', 'white paper', 'legislative analysis', 'impact assessment',
+                    'position paper', 'regulatory review', 'stakeholder report', 'policy memo'
+                ],
+                tones: [
+                    'objective analysis with policy recommendations',
+                    'stakeholder-focused approach with multiple perspectives',
+                    'evidence-based evaluation of policy alternatives',
+                    'cost-benefit analysis with economic implications',
+                    'implementation-focused with practical considerations',
+                    'comparative analysis of international approaches'
+                ],
+                research: [
+                    'government reports, legislative documents, and regulatory data',
+                    'policy research institutes, think tank publications, and analysis',
+                    'economic data, demographic studies, and impact assessments',
+                    'stakeholder interviews, public hearings, and consultation',
+                    'international comparisons and best practices',
+                    'academic research on policy effectiveness and outcomes'
+                ],
+                styles: [
+                    'neutral, objective tone suitable for policymakers',
+                    'clear recommendations with supporting evidence',
+                    'accessible language for diverse stakeholder audiences',
+                    'structured format with executive summary',
+                    'balanced analysis acknowledging trade-offs',
+                    'professional citations following government standards'
+                ]
+            },
+            healthcare: {
+                topics: [
+                    'Telemedicine and Rural Healthcare Access',
+                    'Mental Health Integration in Primary Care',
+                    'Health Disparities and Social Determinants',
+                    'Precision Medicine and Genetic Testing',
+                    'Healthcare Worker Burnout and Retention',
+                    'Medical AI and Clinical Decision Support'
+                ],
+                formats: [
+                    'clinical study', 'systematic review', 'case report', 'quality improvement',
+                    'health policy analysis', 'practice guidelines', 'research protocol', 'meta-analysis'
+                ],
+                tones: [
+                    'evidence-based clinical analysis with patient focus',
+                    'systematic evaluation of treatment outcomes',
+                    'patient-centered approach with quality metrics',
+                    'interdisciplinary collaboration across specialties',
+                    'public health perspective with population impact',
+                    'ethical framework addressing healthcare equity'
+                ],
+                research: [
+                    'clinical trials, patient outcomes, and medical databases',
+                    'peer-reviewed medical journals and systematic reviews',
+                    'health services research and quality improvement data',
+                    'epidemiological studies and population health surveys',
+                    'healthcare policy documents and regulatory guidelines',
+                    'patient-reported outcomes and satisfaction measures'
+                ],
+                styles: [
+                    'medical writing following AMA or Vancouver style',
+                    'evidence-based conclusions with clinical relevance',
+                    'patient-centered language emphasizing outcomes',
+                    'interdisciplinary approach across healthcare fields',
+                    'ethical considerations and informed consent',
+                    'accessible summaries for patient and family education'
+                ]
+            },
+            technology: {
+                topics: [
+                    'Artificial Intelligence Bias and Fairness',
+                    'Cybersecurity in Critical Infrastructure',
+                    'Blockchain Applications Beyond Cryptocurrency',
+                    'Internet of Things and Privacy Concerns',
+                    'Quantum Computing and Encryption',
+                    'Autonomous Vehicles and Ethical Decisions'
+                ],
+                formats: [
+                    'technical report', 'system analysis', 'security assessment', 'research paper',
+                    'white paper', 'architecture document', 'feasibility study', 'technology review'
+                ],
+                tones: [
+                    'technical analysis with implementation considerations',
+                    'systematic evaluation of technological solutions',
+                    'security-focused assessment with risk analysis',
+                    'innovation-driven exploration of emerging technologies',
+                    'user-centered design with accessibility considerations',
+                    'ethical framework addressing technological impact'
+                ],
+                research: [
+                    'technical specifications, industry standards, and protocols',
+                    'peer-reviewed computer science and engineering journals',
+                    'security reports, vulnerability assessments, and audits',
+                    'user studies, usability testing, and feedback',
+                    'market analysis, adoption rates, and technology trends',
+                    'regulatory frameworks and compliance requirements'
+                ],
+                styles: [
+                    'technical precision with clear specifications',
+                    'IEEE or ACM citation format for technical sources',
+                    'accessible explanations for non-technical stakeholders',
+                    'security-conscious language addressing risks',
+                    'innovation-focused tone encouraging development',
+                    'ethical considerations integrated throughout analysis'
+                ]
+            }
+        };
+
+        let currentField = 'business';
+
+        function selectField(field) {
+            currentField = field;
+            
+            // Update field button styles
+            document.querySelectorAll('.field-button').forEach(btn => {
+                btn.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                btn.style.borderColor = 'var(--stroke)';
+                btn.style.color = '#888';
+                btn.classList.remove('active');
+            });
+            
+            const selectedBtn = document.getElementById(`field-${field}`);
+            selectedBtn.style.backgroundColor = 'rgba(19, 163, 128, 0.3)';
+            selectedBtn.style.borderColor = 'rgba(19, 163, 128, 0.5)';
+            selectedBtn.style.color = 'var(--accent-start)';
+            selectedBtn.classList.add('active');
+            
+            // Update all bubble sections
+            updateBubbles();
+        }
+
+        function updateBubbles() {
+            const data = fieldData[currentField];
+            
+            // Update topic bubbles
+            updateBubbleSection('topicBubbles', data.topics, 'topicInput', 'rgba(138, 180, 255, 0.2)', 'rgba(138, 180, 255, 0.4)', 'var(--accent-start)');
+            
+            // Update format bubbles
+            updateBubbleSection('formatBubbles', data.formats, 'formatInput', 'rgba(147, 51, 234, 0.2)', 'rgba(147, 51, 234, 0.4)', '#9333ea');
+            
+            // Update tone bubbles
+            updateBubbleSection('toneBubbles', data.tones, 'toneInput', 'rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0.4)', '#10b981');
+            
+            // Update research bubbles
+            updateBubbleSection('researchBubbles', data.research, 'researchInput', 'rgba(245, 158, 11, 0.2)', 'rgba(245, 158, 11, 0.4)', '#f59e0b');
+            
+            // Update style bubbles
+            updateBubbleSection('styleBubbles', data.styles, 'styleInput', 'rgba(239, 68, 68, 0.2)', 'rgba(239, 68, 68, 0.4)', '#ef4444');
+        }
+
+        function updateBubbleSection(containerId, items, inputId, bgColor, borderColor, textColor) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const button = document.createElement('button');
+                button.textContent = item.length > 40 ? item.substring(0, 37) + '...' : item;
+                button.title = item; // Show full text on hover
+                button.style.cssText = `
+                    background-color: ${bgColor};
+                    border: 1px solid ${borderColor};
+                    color: ${textColor};
+                    padding: 6px 12px;
+                    border-radius: 16px;
+                    font-size: 13px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                `;
+                button.onclick = () => addToField(inputId, item);
+                container.appendChild(button);
+            });
+        }
+
+        function addToField(fieldId, text) {
+            const field = document.getElementById(fieldId);
+            const currentValue = field.value.trim();
+            
+            if (currentValue === '') {
+                field.value = text;
+            } else {
+                field.value = currentValue + ' + ' + text;
+            }
+            field.focus();
+        }
+
+        function clearAllFields() {
+            document.getElementById('topicInput').value = '';
+            document.getElementById('formatInput').value = '';
+            document.getElementById('toneInput').value = '';
+            document.getElementById('researchInput').value = '';
+            document.getElementById('styleInput').value = '';
+            document.getElementById('generatedPrompt').style.display = 'none';
+        }
+
+        // Initialize with business field selected
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBubbles();
+        });
+        
+        function generatePrompt() {
+            const topic = document.getElementById('topicInput').value.trim();
+            const format = document.getElementById('formatInput').value.trim();
+            const tone = document.getElementById('toneInput').value.trim();
+            const research = document.getElementById('researchInput').value.trim();
+            const style = document.getElementById('styleInput').value.trim();
+            
+            // Remove placeholder brackets if they exist
+            const cleanTopic = topic.replace(/\[Topic:.*?\]/g, '').trim();
+            const cleanFormat = format.replace(/\[Format:.*?\]/g, '').trim();
+            const cleanTone = tone.replace(/\[Tone & Structure:.*?\]/g, '').trim();
+            const cleanResearch = research.replace(/\[Research Depth:.*?\]/g, '').trim();
+            const cleanStyle = style.replace(/\[Style:.*?\]/g, '').trim();
+            
+            if (!cleanTopic || !cleanFormat) {
+                alert('Please fill in at least the Topic and Format fields to generate a prompt.');
+                return;
+            }
+            
+            // Following Professor So's exact structure
+            let prompt = `Write a ${cleanFormat} on ${cleanTopic}.`;
+            
+            if (cleanTone) {
+                prompt += ` Begin with ${cleanTone}.`;
+            }
+            
+            if (cleanTone && cleanResearch) {
+                prompt += ` After this introduction, provide a structured analysis that includes ${cleanResearch}.`;
+            } else if (cleanResearch) {
+                prompt += ` Incorporate ${cleanResearch}.`;
+            }
+            
+            if (cleanTone && cleanStyle) {
+                prompt += ` The ${cleanFormat} should follow a logical structure with an engaging introduction (story-driven), followed by an in-depth technical and analytical exploration of the topic, using ${cleanStyle}.`;
+            } else if (cleanStyle) {
+                prompt += ` Use ${cleanStyle}.`;
+            }
+            
+            document.getElementById('promptOutput').textContent = prompt;
+            document.getElementById('generatedPrompt').style.display = 'block';
+            document.getElementById('generatedPrompt').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        let activeHighlight = null;
+        
+        function toggleHighlight(category) {
+            // Clear all highlights first
+            const allElements = document.querySelectorAll('.format, .topic, .tone, .research, .style, .connectors');
+            allElements.forEach(el => {
+                el.style.backgroundColor = '';
+                el.style.fontWeight = '';
+                el.style.color = '';
+            });
+            
+            // If clicking the same category, just clear and return
+            if (activeHighlight === category) {
+                activeHighlight = null;
+                return;
+            }
+            
+            // Highlight the selected category
+            const elements = document.querySelectorAll(`.${category}`);
+            elements.forEach(el => {
+                if (category === 'format') {
+                    el.style.backgroundColor = 'rgba(147, 51, 234, 0.4)';
+                } else if (category === 'topic') {
+                    el.style.backgroundColor = 'rgba(138, 180, 255, 0.4)';
+                } else if (category === 'tone') {
+                    el.style.backgroundColor = 'rgba(16, 185, 129, 0.4)';
+                } else if (category === 'research') {
+                    el.style.backgroundColor = 'rgba(245, 158, 11, 0.4)';
+                } else if (category === 'style') {
+                    el.style.backgroundColor = 'rgba(239, 68, 68, 0.4)';
+                } else if (category === 'connectors') {
+                    el.style.backgroundColor = 'rgba(19, 163, 128, 0.4)';
+                }
+                el.style.fontWeight = 'bold';
+                el.style.color = 'white';
+            });
+            
+            activeHighlight = category;
+        }
+        
+        function copyPrompt() {
+            const promptText = document.getElementById('promptOutput').textContent;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(promptText).then(function() {
+                    const button = event.target;
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+                    button.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+                    button.style.color = '#10b981';
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                        button.style.borderColor = 'var(--stroke)';
+                        button.style.color = 'white';
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Could not copy text: ', err);
+                    fallbackCopyTextToClipboard(promptText);
+                });
+            } else {
+                fallbackCopyTextToClipboard(promptText);
+            }
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const button = event.target;
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+                    button.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+                    button.style.color = '#10b981';
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                        button.style.borderColor = 'var(--stroke)';
+                        button.style.color = 'white';
+                    }, 2000);
+                } else {
+                    alert('Failed to copy. Please select and copy the text manually.');
+                }
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+                alert('Failed to copy. Please select and copy the text manually.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'967d7d22351f6d8a',t:'MTc1Mzk2OTAyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
